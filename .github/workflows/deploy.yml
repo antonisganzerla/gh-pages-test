@@ -1,0 +1,40 @@
+name: Criar pasta e arquivo HTML no Github Pages
+
+on:
+  workflow_dispatch:
+    inputs:
+      platform_name:
+        description: 'Nome da plataforma'
+        required: true
+        type: string
+      emoji:
+        description: 'Emoji da plataforma'
+        required: false
+        type: string
+
+permissions:
+    id-token: write
+    pages: write
+    contents: write
+
+jobs:
+  generate-content:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Criar pasta
+        run: |
+          mkdir -p "public"
+
+      - name: Criar arquivo index.html
+        run: |
+          echo "<html><body><h1>${{ inputs.platform_name }} - ${{ inputs.emoji }}</h1></body></html>" > "public/index.html"
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: public
+          branch: reports
+          target-folder: ${{ inputs.platform_name }}
+
