@@ -1,0 +1,24 @@
+on:
+    workflow_call:
+      inputs:
+        result:
+            description: 'test result'
+            required: true
+            type: string
+
+jobs:
+  print:
+    runs-on: ubuntu-latest
+    steps:
+        - name: Print
+          run: echo ${{ inputs.result }}
+
+        - name: Send Success
+          if: ${{ inputs.result == 'success' }}
+          run: |
+            echo sucesso
+
+        - name: Send Error
+          if: ${{ inputs.result == 'failure' }}
+          run: |
+            echo sucesso    

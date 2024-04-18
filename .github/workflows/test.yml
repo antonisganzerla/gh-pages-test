@@ -1,0 +1,29 @@
+on:
+    workflow_dispatch:
+      inputs:
+        should_fail:
+          description: 'fail'
+          required: true
+          type: boolean
+jobs:
+  print:
+    runs-on: ubuntu-latest
+    steps:
+        - name: Print
+          run: echo ${{ inputs.should_fail }}
+        
+        - name: Force failure with non-zero code
+          run: |
+            if [ "${{ inputs.should_fail }}" != "true" ]; then
+                echo "Skipping failure check as boolean input is not true"
+            else
+                echo "Failure condition met due to boolean input"
+                exit 1  # Force failure with non-zero exit code
+            fi
+
+  publish_report:
+    if: ${{ always() }}
+    needs: print
+    uses: ./.github/workflows/print.yml
+    with:
+      result: ${{needs.print.result}}
